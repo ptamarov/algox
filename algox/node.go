@@ -34,3 +34,27 @@ func (n *node) hrestore() {
 	n.right.left = n
 	n.left.right = n
 }
+
+// Cover a column.
+func (head *node) cover() {
+	head.hremove() // hide column from its own list
+	for node := head.down; node != head; node = node.down {
+		// hide all rows in column from their own columns
+		for mode := node.right; mode != node; mode = mode.right {
+			mode.vremove()
+			mode.head.size--
+		}
+	}
+}
+
+// Uncover a column.
+func (head *node) uncover() {
+	for node := head.up; node != head; node = node.up {
+		// hide all rows in column from their own columns
+		for mode := node.left; mode != node; mode = mode.left {
+			mode.vrestore()
+			mode.head.size++
+		}
+	}
+	head.hrestore() // hide column from its own list
+}
