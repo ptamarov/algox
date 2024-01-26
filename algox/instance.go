@@ -20,6 +20,33 @@ func (p *instance) Solution() []*node {
 	return p.solution
 }
 
+// Turn the instance into a list of subsets.
+func (p *instance) Subsets() [][]int {
+	subsets := [][]int{}
+	visited := make(map[*node]bool)
+
+	for column := p.head.right; column != p.head; column = column.right {
+		for node := column.down; node != column; node = node.down {
+			if !visited[node] {
+				subset := []int{}
+				subset = append(subset, node.head.index)
+				visited[node] = true
+				rowNode := node.right
+				for {
+					if rowNode == node {
+						break
+					}
+					subset = append(subset, rowNode.head.index)
+					visited[rowNode] = true
+					rowNode = rowNode.right
+				}
+				subsets = append(subsets, subset)
+			}
+		}
+	}
+	return subsets
+}
+
 // Create a new exact cover problem instance.
 //
 // size: the size of the underlying set to cover
