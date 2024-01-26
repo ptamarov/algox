@@ -1,5 +1,7 @@
 package algox
 
+import "fmt"
+
 type instance struct {
 	head     *node
 	solution []*node // keep track of rows in a partial solution
@@ -52,6 +54,10 @@ func (p *instance) Subsets() [][]int {
 // size: the size of the underlying set to cover
 // subsets: slices of strictly increasing integers in [0, size)
 func New(size int, subsets [][]int) instance {
+	if size <= 0 {
+		panic("cannot initialize instance with size <= 0")
+	}
+
 	var p instance
 
 	// keep track of the last inserted node in each column
@@ -87,14 +93,28 @@ func New(size int, subsets [][]int) instance {
 	iHead.left = currentColumnHead
 
 	// now populate using subsets
-	for _, subset := range subsets {
+	for index, subset := range subsets {
+		if len(subset) == 0 {
+			continue
+		}
+
 		var last *node
 		var first *node
+		lastElem := -1
 
 		for _, element := range subset {
+			if element >= size || element < 0 {
+				panic(fmt.Sprintf("[at index %d] found %d but elements must be in range [0,%d)", index, element, size))
+			}
+
+			if lastElem >= element {
+				panic(fmt.Sprintf("[at index %d] subset must be increasing", index))
+			}
+			lastElem = element
+
 			newNode := &node{}
 
-			// rows do not have heads so initialize first done in circular list and do nothing
+			// rows do not have heads so initialize first
 			if first == nil {
 				first = newNode
 			} else {
