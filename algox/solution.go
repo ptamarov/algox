@@ -26,8 +26,21 @@ func (i *instance) Solve() {
 func (i *instance) recursiveSolve(k int) {
 	// if the list of columns is empty, a solution was found
 	if i.head.right == i.head {
-		fmt.Println("found a solution at height ", k)
-		// TODO: get solution
+		fmt.Println("** found a solution at height ", k, " **")
+
+		for idx := 0; idx < k; idx++ {
+			fmt.Print("\t")
+			row := i.solution[idx]
+			c := row
+			for {
+				fmt.Print(c.head.index, " ")
+				c = c.right
+				if c == row {
+					break
+				}
+			}
+			fmt.Println()
+		}
 		return
 	}
 
